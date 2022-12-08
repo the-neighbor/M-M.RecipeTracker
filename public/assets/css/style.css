@@ -1,0 +1,33 @@
+.list-group {
+    list-style: decimal inside;
+
+}
+
+.list-group-item {
+    display: list-item;
+}
+
+.list-group-item .input-group {
+    width: 100%;
+    height: 100%;
+}
+
+.list-group-item .input-group textarea{
+    width: 100%;
+    height: 100%;
+}
+
+.selected {
+    background-color: blue;
+    color:white;
+}
+
+.card {
+    padding: 0;
+}
+
+.card img {
+    width: 100%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+}
