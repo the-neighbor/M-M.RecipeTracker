@@ -23,6 +23,7 @@ function displayError(error) {
 function showRecipe(data) {
   console.log(data);
   const recipeName = document.querySelector("#show-recipe-title");
+  const recipeImage = document.querySelector("#show-recipe-image");
   recipeName.textContent = data.name;
   const recipeDescription = document.querySelector("#show-recipe-description");
   recipeDescription.textContent = data.description;
@@ -30,6 +31,8 @@ function showRecipe(data) {
   ingredientsList.innerHTML = "";
   const instructionsList = document.querySelector("#instructions-list");
   instructionsList.innerHTML = "";
+  recipeImage.innerHTML = "";
+  recipeImage.innerHTML = `<img src="${data.image}" class="img-fluid card-img-top" alt="Responsive image">`;
   data.instructions.forEach((instruction) => {
     const instructionItem = document.createElement("li");
     instructionItem.classList.add("list-group-item");
@@ -37,16 +40,18 @@ function showRecipe(data) {
         <span>${instruction.description}</span>
         `;
     instructionsList.appendChild(instructionItem);
+  });
     data.ingredients.forEach((ingredient) => {
+      console.log(`ingredient: ${ingredient.description}`)
       const ingredientItem = document.createElement("li");
       ingredientItem.classList.add("list-group-item");
       ingredientItem.innerHTML = `
-        <span>${ingredient.name}</span>
-        <span>${ingredient.qty}</span>
+        <span>${ingredient.description}</span>
         `;
       ingredientsList.appendChild(ingredientItem);
     });
-  });
+
+  document.location = "/#show-recipe";
 }
 
 const fetchRecipe = async (recipeId) => {
@@ -79,7 +84,7 @@ const getRecipes = () => {
         const recipeCard = document.createElement("div");
         recipeCard.classList.add("card");
         recipeCard.classList.add("col-12");
-        recipeCard.classList.add("col-md-6");
+        recipeCard.classList.add("col-md-5");
         recipeCard.classList.add("m-2");
         recipeCard.setAttribute("data-id", recipe.id);
         recipeCard.innerHTML = `
@@ -152,9 +157,7 @@ const addIngredient = (event) => {
   ingredientInputGroup.classList.add("mb-3");
   ingredientInputGroup.innerHTML = `
     <input type="text" class="form-control" placeholder="Ingredient" aria-label="Ingredient" aria-describedby="button-addon2">
-    <input type="number" class="form-control" placeholder="Quantity" aria-label="Quantity" aria-describedby="button-addon2">
-    <input type="text" class="form-control" placeholder="Unit" aria-label="Unit" aria-describedby="button-addon2">
-    <button class="btn btn-outline-secondary" type="button" id="button-addon2">Button</button>
+    <button class="btn btn-outline-secondary btn-danger" type="button" id="button-addon2">X</button>
     `;
   const ingredientsList = document.querySelector("#ingredients");
   ingredientInputGroup
@@ -166,14 +169,8 @@ const addIngredient = (event) => {
 //get ingredients from input group
 const getIngredient = (inputGroupElement) => {
   const inputs = inputGroupElement.querySelectorAll("input");
-  const ingredientName = inputs[0].value;
-  const ingredientQty = inputs[1].value;
-  const ingredientUnit = inputs[2].value;
-  return {
-    name: ingredientName,
-    qty: ingredientQty,
-    unit: ingredientUnit
-  };
+  const ingredientDescription = inputs[0].value;
+  return ingredientDescription
 }
 
 //get instructions from input group

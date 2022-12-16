@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,200;0,300;0,400;0,500;0,600;1,200;1,300;1,400;1,500;1,600&display=swap');
+
 .list-group {
     list-style: decimal inside;
 
@@ -17,13 +19,19 @@
     height: 100%;
 }
 
+div.card {
+    color: black
+}
+
 .selected {
-    background-color: black;
-    color:white;
+    background-color: rgba(153, 41, 46, 1) !important;
+    color:white !important;
+    border: 1px solid white
 }
 
 .card {
     padding: 0;
+    color: black;
 }
 
 .card img {
@@ -31,3 +39,30 @@
     aspect-ratio: 1/1;
     object-fit: cover;
 }
+
+body {
+    background-image: url(../images/plaid3.png);
+    background-size: 20em;
+}
+
+body {
+    position: relative;
+    font-family: 'IBM Plex Serif', serif;
+    
+}
+
+  #main {
+    background-color: rgba(153, 41, 46, 0.885);
+    border-left: 2px dashed white;
+    border-right: 2px dashed white;
+    height: 100vh;
+    color:white;
+    overflow:scroll;
+    overflow-x:hidden;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+
+  }
+    #main::-webkit-scrollbar {
+        display: none;
+    }

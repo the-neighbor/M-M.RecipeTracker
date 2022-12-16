@@ -10,7 +10,7 @@ function validateInstruction(instruction) {
 }
 
 function validateIngredient(ingredient) {
-    if (!ingredient.name || !ingredient.qty || !ingredient.unit ) {
+    if (!ingredient.description) {
         return false;
     }
     return true;

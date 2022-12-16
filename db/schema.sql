@@ -14,9 +14,7 @@ CREATE TABLE recipes (
 DROP TABLE IF EXISTS ingredients;
 CREATE TABLE ingredients (
     id INT NOT NULL AUTO_INCREMENT,
-    name VARCHAR(255),
-    qty INT NOT NULL,
-    unit VARCHAR(255) NOT NULL,
+    description VARCHAR(255),
     recipe_id INT,
     PRIMARY KEY (id),
     FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE

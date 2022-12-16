@@ -7,7 +7,7 @@ dotenv.config();
 const util = require('util');
 
 const app = express();
-const port = 3000;
+const port = 3001;
 
 
 app.use(express.urlencoded({ extended: true }));
@@ -39,7 +39,7 @@ app.post('/api/recipes', async (req, res) => {
         recipe.ingredients.forEach((ingredient)=>{
             console.log(recipe_id);
             console.log(ingredient);
-            db.query("INSERT INTO ingredients VALUES(?, ?, ?, ?, ?)", [0, ingredient.name, ingredient.qty, ingredient.unit, recipe_id]);
+            db.query("INSERT INTO ingredients VALUES(?, ?, ?)", [0, ingredient, recipe_id]);
         });
         var step = 1;
         recipe.instructions.forEach(async(instruction)=>{
@@ -68,7 +68,7 @@ app.put('/api/recipes/:recipe_id', async (req, res) => {
         await db.query("DELETE FROM ingredients WHERE recipe_id = ?", recipe_id);
         await db.query("DELETE FROM instructions WHERE recipe_id = ?", recipe_id);
         recipe.ingredients.forEach((ingredient)=>{
-            db.query("INSERT INTO ingredients VALUES(?, ?, ?, ?, ?)", [0, ingredient.name, ingredient.qty, ingredient.unit, recipe_id]);
+            db.query("INSERT INTO ingredients VALUES(?, ?, ?)", [0, ingredient, recipe_id]);
         }
         );
         var step = 1;
@@ -91,7 +91,7 @@ app.get('/api/recipes/:recipe_id', async (req, res) => {
         if (recipes.length) {
             const recipe = recipes[0];
             console.log(recipe_id, recipe)
-            recipe.ingredients = await db.query("SELECT * FROM ingredients WHERE recipe_id = ?", [recipe_id])
+            recipe.ingredients = await db.query("SELECT description FROM ingredients WHERE recipe_id = ?", [recipe_id])
             recipe.instructions = await db.query("SELECT * FROM instructions WHERE recipe_id = ?", [recipe_id])
             res.json(recipe);
             console.log(recipe);
@@ -115,7 +115,7 @@ app.get('/api/recipes', (req, res) => {
 
 app.post('/api/ingredients', (req, res) => {
     const ingredient = req.body;
-    db.query("INSERT INTO ingredients VALUES(?, ?, ?, ?, ?)", [0,ingredient.name, ingredient.qty, ingredient.unit, ingredient.recipe], (err, results) => {
+    db.query("INSERT INTO ingredients VALUES(?, ?, ?)", [0,ingredient,ingredient.recipe], (err, results) => {
         if (err) {
             throw(err)
         }
@@ -127,7 +127,7 @@ app.post('/api/:recipe_id/ingredients', (req, res) => {
     const ingredients = req.body;
     const { recipe_id } = req.params;
     ingredients.forEach(ingredient => {
-        db.query("INSERT INTO ingredients VALUES(?, ?, ?, ?, ?)", [0,ingredient.name, ingredient.qty, ingredient.unit, recipe_id], (err, results) => {
+        db.query("INSERT INTO ingredients VALUES(?, ?, ?)", [0,ingredient, recipe_id], (err, results) => {
             if (err) {
                 throw(err)
             }
@@ -162,6 +162,39 @@ app.delete('/api/:recipe_id', (req, res) => {
             res.send("Success!")
             })
         }
+)
+
+app.post('/api/seed' , (req, res) => {
+    const recipes = req.body.recipes || require("./utils/seed.json");
+    console.log(recipes);
+    recipes.forEach(async (recipe) => {
+        if (!validateRecipe(recipe)) {
+            res.status(400).json({ message: 'Invalid recipe' });
+            return;
+        }
+        try {
+            if (!recipe.image) {
+                recipe.image = await getImageFromGoogle(recipe.name);
+            }
+            const returnValue = await db.query("INSERT INTO recipes VALUES(?, ?, ?, ?)", [0,recipe.name, recipe.description, recipe.image]);
+            var recipe_id = returnValue.insertId;
+            recipe.ingredients.forEach((ingredient)=>{
+                console.log(recipe_id);
+                console.log(ingredient);
+                db.query("INSERT INTO ingredients VALUES(?, ?, ?)", [0, ingredient, recipe_id]);
+            });
+            var step = 1;
+            recipe.instructions.forEach(async(instruction)=>{
+                await db.query("INSERT INTO instructions VALUES(?, ?, ?, ?)", [0, step, instruction, recipe_id]);
+                step++;
+            });
+        }
+        catch (err) {
+            res.status(500).json(err);
+        }
+    })
+    res.send("Success!")
+}
 )
 
 app.listen(port);
