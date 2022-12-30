@@ -7,7 +7,7 @@ dotenv.config();
 const util = require('util');
 
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001;
 
 
 app.use(express.urlencoded({ extended: true }));
@@ -15,12 +15,12 @@ app.use(express.static('public'));
 app.use(cors());
 app.use(express.json());
 
-const db = mysql.createConnection({
+const db = (proces.env.JAWSDB_URL ? mysql.createConnection(process.env.JAWSDB_URL) : mysql.createConnection({
     host: 'localhost',
     user: process.env.DB_USER,
     password: process.env.DB_PASS,
     database: process.env.DB_NAME
-}, console.log('Connected to the recipe_db database.'));
+}, console.log('Connected to the recipe_db database.')))
 
 db.query = util.promisify(db.query);
 
