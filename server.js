@@ -15,7 +15,7 @@ app.use(express.static('public'));
 app.use(cors());
 app.use(express.json());
 
-const db = (process.env.JAWSDB_URL ? mysql.createConnection(process.env.JAWSDB_URL) : mysql.createConnection({
+const db = (process.env.DBURL ? mysql.createConnection(process.env.DBURL) : mysql.createConnection({
     host: 'localhost',
     user: process.env.DB_USER,
     password: process.env.DB_PASS,
