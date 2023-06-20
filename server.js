@@ -165,6 +165,16 @@ app.delete('/api/:recipe_id', (req, res) => {
         }
 )
 
+app.post('/api/schema' , (req, res) => {
+        try {
+            await db.query("SOURCE db/schema.sql");
+        }
+        catch (err) {
+            res.status(500).json(err);
+        }
+    res.send("Success!")
+})
+
 app.post('/api/seed' , (req, res) => {
     const recipes = req.body.recipes || require("./utils/seed.json");
     console.log(recipes);
