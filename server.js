@@ -165,7 +165,7 @@ app.delete('/api/:recipe_id', (req, res) => {
         }
 )
 
-app.post('/api/schema' , (req, res) => {
+app.post('/api/schema' , async (req, res) => {
         try {
             await db.query("SOURCE db/schema.sql");
         }
