@@ -16,6 +16,7 @@ app.use(cors());
 app.use(express.json());
 
 console.log(process.env.DBURL)
+
 const db = (process.env.DBURL ? mysql.createConnection(process.env.DBURL) : mysql.createConnection({
     host: 'localhost',
     user: process.env.DB_USER,
